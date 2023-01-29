@@ -9,8 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,23 +30,26 @@ public class DepthIterations {
 
     private boolean uniqueness;
 
-    private List<String> allUrlsFound;
+    private Set<String> allUrlsFound;
 
     public DepthIterations(String urlString, int maxDifferentURLs, int depthFactor, boolean uniqueness) {
         this.initialUrlString = urlString;
         this.maxDifferentURLs = maxDifferentURLs;
         this.depthFactor = depthFactor;
         this.uniqueness = uniqueness;
-        this.allUrlsFound = new ArrayList<String>(maxDifferentURLs ^ depthFactor);
+        if(uniqueness){
+            this.allUrlsFound = new HashSet<>();
+        }
     }
 
     public void doIterations() {
         Map<Integer, ArrayList<String>> depthMap = new HashMap<>();
         ArrayList<String> initialList = new ArrayList<>();
-        initialList.add(initialUrlString);
+        initialList.add(this.initialUrlString);
         depthMap.put(0, initialList); // depth 0 -> the URL input we got
-        allUrlsFound.add(initialUrlString);
-
+        if(this.uniqueness){
+            this.allUrlsFound.add(initialUrlString);
+        }
         for (int depth = 0; depth <= this.depthFactor; depth++) {
             List<String> urlExtracted = depthMap.get(depth);
             for (int i = 0; i < urlExtracted.size(); i++) {
@@ -79,14 +85,12 @@ public class DepthIterations {
                     continue;
                 }
                 if (this.uniqueness) {
-                    if (!this.allUrlsFound.contains(link)) {
-                        allUrlsFound.add(link);
+                    if (this.allUrlsFound.add(link)) {
                         urlFoundList.add(link);
                     } else {
                         continue;
                     }
                 } else {
-                    allUrlsFound.add(link);
                     urlFoundList.add(link);
                 }
             } else {

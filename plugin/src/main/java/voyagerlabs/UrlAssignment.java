@@ -2,8 +2,6 @@ package voyagerlabs;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UrlAssignment {
 
@@ -11,14 +9,13 @@ public class UrlAssignment {
 
         Scanner s = new Scanner(System.in);
         try {
-            System.out.println("Please enter URL to start the process with:");
+            System.out.print("Please enter URL to start the process with:");
             String urlString = s.nextLine();
-            System.out.println(
-                    "Please enter The maximal amount of different URLs to extract from the page (Natural Number) :");
+            System.out.print("Please enter The maximal amount of different URLs to extract from the page (Natural Number) :");
             int maxDifferentURLs = s.nextInt();
-            System.out.println("Please enter How deep the process should run (depth factor) - (Natural Number) :");
+            System.out.print("Please enter How deep the process should run (depth factor) - (Natural Number) :");
             int depthFactor = s.nextInt();
-            System.out.println("Please enter Boolean flag indicating cross-level uniqueness( false / true ) :");
+            System.out.print("Please enter Boolean flag indicating cross-level uniqueness( false / true ) :");
             boolean uniqueness = s.nextBoolean();
             DepthIterations depthIterations = new DepthIterations(urlString, maxDifferentURLs, depthFactor, uniqueness);
             if (depthIterations.isValidAndReachableUrl(urlString) && maxDifferentURLs >= 0 && depthFactor >= 0) {
